@@ -1,40 +1,50 @@
+import * as React from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { useCallback } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
+import { useFonts } from "expo-font";
+import {
+  DMSans_400Regular,
+  DMSans_400Regular_Italic,
+  DMSans_500Medium,
+  DMSans_500Medium_Italic,
+  DMSans_700Bold,
+  DMSans_700Bold_Italic,
+} from "@expo-google-fonts/dm-sans";
 import { Colors } from "../../Shared/Colors";
-import { Agenda } from "react-native-calendars";
-import { SafeAreaView } from "react-native-safe-area-context";
+import BottomBar from "../../Components/BottomBar";
 
 export default function Schedule({ navigation }) {
+  const [fontsLoaded] = useFonts({
+    DMSans_400Regular,
+    DMSans_400Regular_Italic,
+    DMSans_500Medium,
+    DMSans_500Medium_Italic,
+    DMSans_700Bold,
+    DMSans_700Bold_Italic,
+  });
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
-    <View>
-      <Agenda
-        items={{
-          "2012-05-22": [{ name: "item 1 - any js object" }],
-          "2012-05-23": [{ name: "item 2 - any js object", height: 80 }],
-          "2012-05-24": [],
-          "2012-05-25": [
-            { name: "item 3 - any js object" },
-            { name: "any js object" },
-          ],
-        }}
-        renderItem={(item, firstItemInDay) => {
-          return (
-            <View>
-              <Text>{item.name}</Text>
-            </View>
-          );
-        }}
-        // Specify how empty date content with no items should be rendered
-        renderEmptyDate={() => {
-          return <View />;
-        }}
-        // Specify what should be rendered instead of ActivityIndicator
-        renderEmptyData={() => {
-          return <View />;
-        }}
-        // Agenda container style
-        style={{}}
-      />
+    <View style={s.ContainerMain}>
+      <StatusBar style="dark" />
+      <Text style={s.Title}>Agendados</Text>
+
+      <BottomBar props={navigation} />
     </View>
   );
 }
@@ -42,5 +52,14 @@ export default function Schedule({ navigation }) {
 const s = StyleSheet.create({
   ContainerMain: {
     backgroundColor: Colors.ColorWhite,
+    flex: 1,
+  },
+  Title: {
+    color: Colors.ColorDeepBlue,
+    fontSize: 25,
+    fontFamily: "DMSans_700Bold",
+    marginTop: 110,
+    marginHorizontal: 22,
+    marginBottom: 13,
   },
 });

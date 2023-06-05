@@ -78,6 +78,8 @@ export default function FinnishRegister({ navigation, route }) {
     myBody["state"] = StateSelected;
     myBody["city"] = CitySelected;
     console.log(myBody);
+
+    navigation.navigate("Home");
   };
 
   const [fontsLoaded] = useFonts({

@@ -1,32 +1,88 @@
 import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import { Colors } from "../Shared/Colors";
+import { useEffect, useState, useContext } from "react";
+import AppContext from "../Shared/AppContext";
 
-export default function BottomBar({ navigation }) {
+export default function BottomBar({ props }) {
+  const { CurrentScreen, setCurrentScreen } = useContext(AppContext);
+
+  const Pages = {
+    Home: "Home",
+    Favorites: "Favorites",
+    Schedule: "Schedule",
+    Profile: "Profile",
+  };
+
+  const HandleHome = () => {
+    setCurrentScreen("Home");
+    props.navigate("Home");
+  };
+  const HandleFavorites = () => {
+    setCurrentScreen("Favorites");
+    props.navigate("Favorites");
+  };
+  const HandleSchedule = () => {
+    setCurrentScreen("Schedule");
+    props.navigate("Schedule");
+  };
+  const HandleProfile = () => {
+    setCurrentScreen("Profile");
+    props.navigate("Profile");
+  };
+
   return (
     <View style={s.ContainerMain}>
-      <TouchableOpacity>
-        <Image
-          style={{ width: 30, height: 43 }}
-          source={require("../../assets/Images/Home/BtnHome.png")}
-        />
+      <TouchableOpacity onPress={HandleHome}>
+        {CurrentScreen === Pages.Home ? (
+          <Image
+            style={{ width: 30, height: 43 }}
+            source={require("../../assets/Images/Home/BtnHomeSelected.png")}
+          />
+        ) : (
+          <Image
+            style={{ width: 30, height: 43 }}
+            source={require("../../assets/Images/Home/BtnHome.png")}
+          />
+        )}
       </TouchableOpacity>
-      <TouchableOpacity>
-        <Image
-          style={{ width: 51, height: 43 }}
-          source={require("../../assets/Images/Home/BtnFavo.png")}
-        />
+      <TouchableOpacity onPress={HandleFavorites}>
+        {CurrentScreen === Pages.Favorites ? (
+          <Image
+            style={{ width: 51, height: 43 }}
+            source={require("../../assets/Images/Home/BtnFavoSelected.png")}
+          />
+        ) : (
+          <Image
+            style={{ width: 51, height: 43 }}
+            source={require("../../assets/Images/Home/BtnFavo.png")}
+          />
+        )}
       </TouchableOpacity>
-      <TouchableOpacity>
-        <Image
-          style={{ width: 65, height: 43 }}
-          source={require("../../assets/Images/Home/BtnAgenda.png")}
-        />
+      <TouchableOpacity onPress={HandleSchedule}>
+        {CurrentScreen === Pages.Schedule ? (
+          <Image
+            style={{ width: 65, height: 43 }}
+            source={require("../../assets/Images/Home/BtnAgendaSelected.png")}
+          />
+        ) : (
+          <Image
+            style={{ width: 65, height: 43 }}
+            source={require("../../assets/Images/Home/BtnAgenda.png")}
+          />
+        )}
       </TouchableOpacity>
-      <TouchableOpacity>
-        <Image
-          style={{ width: 30, height: 43 }}
-          source={require("../../assets/Images/Home/BtnPerfil.png")}
-        />
+      <TouchableOpacity onPress={HandleProfile}>
+        {CurrentScreen === Pages.Profile ? (
+          <Image
+            style={{ width: 30, height: 43 }}
+            source={require("../../assets/Images/Home/BtnPerfilSelected.png")}
+          />
+        ) : (
+          <Image
+            style={{ width: 30, height: 43 }}
+            source={require("../../assets/Images/Home/BtnPerfil.png")}
+          />
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -44,6 +100,6 @@ const s = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     padding: 12,
-    marginTop: 2
+    marginTop: 2,
   },
 });

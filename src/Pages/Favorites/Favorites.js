@@ -1,13 +1,12 @@
 import * as React from "react";
 import { StatusBar } from "expo-status-bar";
-import { useCallback, useState, useEffect, useContext } from "react";
+import { useCallback } from "react";
 import {
   StyleSheet,
   Text,
   View,
   Image,
   TouchableOpacity,
-  ScrollView,
   FlatList,
 } from "react-native";
 import { useFonts } from "expo-font";
@@ -21,12 +20,8 @@ import {
 } from "@expo-google-fonts/dm-sans";
 import { Colors } from "../../Shared/Colors";
 import BottomBar from "../../Components/BottomBar";
-import AppContext from "../../Shared/AppContext";
 
-export default function Home({ navigation }) {
-  const { CurrentScreen, setCurrentScreen } = useContext(AppContext);
-  console.log(CurrentScreen)
-
+export default function Favorites({ navigation }) {
   const [fontsLoaded] = useFonts({
     DMSans_400Regular,
     DMSans_400Regular_Italic,
@@ -35,7 +30,6 @@ export default function Home({ navigation }) {
     DMSans_700Bold,
     DMSans_700Bold_Italic,
   });
-
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
       await SplashScreen.hideAsync();
@@ -56,46 +50,19 @@ export default function Home({ navigation }) {
       nome: "Barbearia Arretado",
       rate: "3,0",
       distance: "1,9 km",
+      favor: true,
     },
     {
       nome: "Carroom Instituto e Barbearia",
       rate: 4.0,
       distance: "1,9 km",
-    },
-    {
-      nome: "Barbearia off2",
-      rate: 2.0,
-      distance: "1,9 km",
+      favor: true,
     },
     {
       nome: "Barbearia off",
-      rate: 1.0,
-      distance: "1,9 km",
-    },
-    {
-      nome: "Barbearia Queiroz",
-      rate: 4.0,
-      distance: "1,9 km",
-    },
-    {
-      nome: "Salão Novo Perfil",
       rate: 2.0,
       distance: "1,9 km",
-    },
-    {
-      nome: "Junior Lima",
-      rate: 5.0,
-      distance: "1,9 km",
-    },
-    {
-      nome: "Novo Estilo",
-      rate: 1.0,
-      distance: "1,9 km",
-    },
-    {
-      nome: "Novizu BarberShop",
-      rate: 0.0,
-      distance: "1,9 km",
+      favor: true,
     },
   ];
 
@@ -139,22 +106,11 @@ export default function Home({ navigation }) {
 
   return (
     <View style={s.ContainerMain}>
-      <StatusBar style="light" />
-      <View style={s.ContainerTopBar}>
-        <Image
-          style={s.Logo1}
-          source={require("../../../assets/Images/Home/Location.png")}
-        />
-        <Text style={s.CityText}>Cidade - CE</Text>
-        <TouchableOpacity>
-          <Image
-            style={s.Logo2}
-            source={require("../../../assets/Images/Home/Vector.png")}
-          />
-        </TouchableOpacity>
-      </View>
-      <Text style={s.Title}>Barbearias</Text>
+      <StatusBar style="dark" />
+
+      <Text style={s.Title}>Favoritos</Text>
       <FlatList
+        style={s.FlatList}
         data={barberData}
         renderItem={({ item }) => <Item props={item} />}
         keyExtractor={(item) => item.nome}
@@ -169,40 +125,13 @@ const s = StyleSheet.create({
     backgroundColor: Colors.ColorWhite,
     flex: 1,
   },
-  ContainerTopBar: {
-    backgroundColor: Colors.ColorDeepBlue,
-    height: 113,
-    width: "100%",
-    borderBottomLeftRadius: 23,
-    borderBottomRightRadius: 23,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "flex-end",
-  },
-  CityText: {
-    color: Colors.ColorWhite,
-    fontSize: 16,
-    fontFamily: "DMSans_400Regular",
-    marginVertical: 24,
-  },
-  Logo1: {
-    marginHorizontal: 20,
-    marginVertical: 24,
-    height: 24,
-    width: 24,
-  },
-  Logo2: {
-    marginHorizontal: 20,
-    marginVertical: 30,
-    width: 14,
-    height: 8,
-  },
   Title: {
     color: Colors.ColorDeepBlue,
-    fontSize: 24,
+    fontSize: 25,
     fontFamily: "DMSans_700Bold",
-    marginTop: 20,
-    marginHorizontal: 24,
+    marginTop: 110,
+    marginHorizontal: 22,
+    marginBottom: 13,
   },
   ContainerBarber: {
     display: "flex",
