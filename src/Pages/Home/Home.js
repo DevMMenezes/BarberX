@@ -26,7 +26,7 @@ import UserContext from "../../Shared/UserContext";
 import { AxiosReqIBGE, AxiosReqAPI } from "../../Shared/Axios";
 
 export default function Home({ navigation }) {
-  const { CurrentScreen, setCurrentScreen } = useContext(AppContext);
+  const { Barbers, setBarbers } = useContext(AppContext);
   const { User, setUser } = useContext(UserContext);
   const [City, setCity] = useState("");
 
@@ -37,10 +37,22 @@ export default function Home({ navigation }) {
           `${AxiosReqIBGE.baseURLIBGE}localidades/municipios/${User.Data.cidade}`
         );
         setCity(response.data);
-       
       };
 
       ReqAPI();
+
+      const ReqAPIBarbers = async () => {
+        const UserData = await AxiosReqAPI.axiosInstance
+          .get(`${AxiosReqAPI.BaseURL}barbearia`)
+          .catch((error) => {
+            console.log("error: " + error.response.status);
+          });
+
+        const DataItem = UserData.data.Data;
+        await setBarbers(DataItem);
+      };
+
+      ReqAPIBarbers();
     } catch (error) {
       if (error) {
         console.log(error.message, error);
@@ -108,19 +120,19 @@ export default function Home({ navigation }) {
         style={s.LogoBarber}
         source={require("../../../assets/Images/Home/EllipseLogo.png")}
       />
-      <Text style={s.NameBarber}>{props.nome}</Text>
+      <Text style={s.NameBarber}>{props.nome_barbearia}</Text>
       <Image
         style={s.StarLogo}
         source={require("../../../assets/Images/Home/Star.png")}
       />
-      <Text style={s.RateBarber}>{`${parseFloat(props.rate)}  `}</Text>
+      <Text style={s.RateBarber}>{0}</Text>
       <Image
         style={s.LocationLogo}
         source={require("../../../assets/Images/Home/Location.png")}
       />
-      <Text style={s.DistanceBarber}>{`${props.distance}`}</Text>
+      <Text style={s.DistanceBarber}>{0}</Text>
       <TouchableOpacity style={s.FavorContainer}>
-        {props.favor ? (
+        {1 == 1 ? (
           <Image
             style={s.LogoFavor}
             source={require("../../../assets/Images/Home/Favo.png")}
@@ -166,9 +178,7 @@ export default function Home({ navigation }) {
           style={s.Logo1}
           source={require("../../../assets/Images/Home/Location.png")}
         />
-        <Text style={s.CityText}>
-          {City.nome}
-        </Text>
+        <Text style={s.CityText}>{City.nome}</Text>
         <TouchableOpacity>
           <Image
             style={s.Logo2}
@@ -178,9 +188,9 @@ export default function Home({ navigation }) {
       </View>
       <Text style={s.Title}>Barbearias</Text>
       <FlatList
-        data={barberData}
+        data={Barbers}
         renderItem={({ item }) => <Item props={item} />}
-        keyExtractor={(item) => item.nome}
+        keyExtractor={(item) => item.id}
       />
       <BottomBar props={navigation} />
     </View>
