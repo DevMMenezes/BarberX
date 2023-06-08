@@ -107,6 +107,10 @@ export default function Favorites({ navigation }) {
   return (
     <View style={s.ContainerMain}>
       <StatusBar style="dark" />
+      <Image
+          style={s.Logo}
+          source={require("../../../assets/Images/Login/Logo.png")}
+        />
 
       <Text style={s.Title}>Favoritos</Text>
       <FlatList
@@ -125,13 +129,19 @@ const s = StyleSheet.create({
     backgroundColor: Colors.ColorWhite,
     flex: 1,
   },
+  Logo: {
+    alignSelf: "center",
+    width: 150,
+    height: 47,
+    marginTop: 70
+  },
   Title: {
     color: Colors.ColorDeepBlue,
     fontSize: 25,
     fontFamily: "DMSans_700Bold",
-    marginTop: 110,
-    marginHorizontal: 22,
+    marginHorizontal: 24,
     marginBottom: 13,
+    marginTop: 15,
   },
   ContainerBarber: {
     display: "flex",

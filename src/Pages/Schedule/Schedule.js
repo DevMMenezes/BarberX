@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
+  ScrollView,
 } from "react-native";
 import { useFonts } from "expo-font";
 import {
@@ -39,11 +40,70 @@ export default function Schedule({ navigation }) {
     return null;
   }
 
+  let barberData = [
+    {
+      nome: "Barbearia Novo Visual",
+      rate: "5,0",
+      distance: "1,9 km",
+      favor: true,
+    },
+    {
+      nome: "Barbearia Arretado",
+      rate: "3,0",
+      distance: "1,9 km",
+    },
+    {
+      nome: "Carroom Instituto e Barbearia",
+      rate: 4.0,
+      distance: "1,9 km",
+    },
+    {
+      nome: "Barbearia off2",
+      rate: 2.0,
+      distance: "1,9 km",
+    },
+    {
+      nome: "Barbearia off",
+      rate: 1.0,
+      distance: "1,9 km",
+    },
+    {
+      nome: "Barbearia Queiroz",
+      rate: 4.0,
+      distance: "1,9 km",
+    },
+    {
+      nome: "Salão Novo Perfil",
+      rate: 2.0,
+      distance: "1,9 km",
+    },
+    {
+      nome: "Junior Lima",
+      rate: 5.0,
+      distance: "1,9 km",
+    },
+    {
+      nome: "Novo Estilo",
+      rate: 1.0,
+      distance: "1,9 km",
+    },
+    {
+      nome: "Novizu BarberShop",
+      rate: 0.0,
+      distance: "1,9 km",
+    },
+  ];
+
   return (
     <View style={s.ContainerMain}>
       <StatusBar style="dark" />
-      <Text style={s.Title}>Agendados</Text>
+      <Image
+          style={s.Logo}
+          source={require("../../../assets/Images/Login/Logo.png")}
+        />
 
+      <Text style={s.Title}>Agendados</Text>
+      <ScrollView>{barberData.map((barber) => {})}</ScrollView>
       <BottomBar props={navigation} />
     </View>
   );
@@ -54,12 +114,18 @@ const s = StyleSheet.create({
     backgroundColor: Colors.ColorWhite,
     flex: 1,
   },
+  Logo: {
+    alignSelf: "center",
+    width: 150,
+    height: 47,
+    marginTop: 70
+  },
   Title: {
     color: Colors.ColorDeepBlue,
     fontSize: 25,
     fontFamily: "DMSans_700Bold",
-    marginTop: 110,
-    marginHorizontal: 22,
+    marginHorizontal: 24,
     marginBottom: 13,
+    marginTop: 15,
   },
 });

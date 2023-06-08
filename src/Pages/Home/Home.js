@@ -22,28 +22,31 @@ import {
 import { Colors } from "../../Shared/Colors";
 import BottomBar from "../../Components/BottomBar";
 import AppContext from "../../Shared/AppContext";
+import UserContext from "../../Shared/UserContext";
+import { AxiosReqIBGE, AxiosReqAPI } from "../../Shared/Axios";
 
 export default function Home({ navigation }) {
   const { CurrentScreen, setCurrentScreen } = useContext(AppContext);
-  console.log(CurrentScreen)
+  const { User, setUser } = useContext(UserContext);
+  const [City, setCity] = useState("");
 
-  const [fontsLoaded] = useFonts({
-    DMSans_400Regular,
-    DMSans_400Regular_Italic,
-    DMSans_500Medium,
-    DMSans_500Medium_Italic,
-    DMSans_700Bold,
-    DMSans_700Bold_Italic,
-  });
+  useEffect(() => {
+    try {
+      const ReqAPI = async () => {
+        const response = await AxiosReqIBGE.axiosInstance.get(
+          `${AxiosReqIBGE.baseURLIBGE}localidades/municipios/${User.Data.cidade}`
+        );
+        setCity(response.data);
+       
+      };
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
+      ReqAPI();
+    } catch (error) {
+      if (error) {
+        console.log(error.message, error);
+      }
     }
-  }, [fontsLoaded]);
-  if (!fontsLoaded) {
-    return null;
-  }
+  }, []);
 
   let barberData = [
     {
@@ -137,6 +140,24 @@ export default function Home({ navigation }) {
     </TouchableOpacity>
   );
 
+  const [fontsLoaded] = useFonts({
+    DMSans_400Regular,
+    DMSans_400Regular_Italic,
+    DMSans_500Medium,
+    DMSans_500Medium_Italic,
+    DMSans_700Bold,
+    DMSans_700Bold_Italic,
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <View style={s.ContainerMain}>
       <StatusBar style="light" />
@@ -145,7 +166,9 @@ export default function Home({ navigation }) {
           style={s.Logo1}
           source={require("../../../assets/Images/Home/Location.png")}
         />
-        <Text style={s.CityText}>Cidade - CE</Text>
+        <Text style={s.CityText}>
+          {City.nome}
+        </Text>
         <TouchableOpacity>
           <Image
             style={s.Logo2}

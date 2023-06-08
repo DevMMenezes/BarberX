@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useContext } from "react";
 import { Picker } from "@react-native-picker/picker";
 import { StatusBar } from "expo-status-bar";
 import { Snackbar } from "react-native-paper";
@@ -25,7 +25,8 @@ import {
 } from "@expo-google-fonts/dm-sans";
 
 import { Colors } from "../../Shared/Colors";
-import { AxiosReq } from "../../Shared/Axios";
+import { AxiosReqIBGE, AxiosReqAPI } from "../../Shared/Axios";
+import UserContext from "../../Shared/UserContext";
 
 export default function FinnishRegister({ navigation, route }) {
   const [StateSelected, setStateSelected] = useState(12); // Acre code
@@ -34,13 +35,16 @@ export default function FinnishRegister({ navigation, route }) {
   const [CitySelected, setSelectMuni] = useState(2700201); // Acrelandia code
   const [NameSelected, setNameSelected] = useState("");
   const [SnackShow, setSnackShow] = useState(false);
+  const [SnackShowResponse, setSnackShowResponse] = useState(false);
+  const [SnackShowResponseError, setSnackShowResponseError] = useState(false);
+  
 
   const { myBody } = route.params;
   useEffect(() => {
     try {
       const ReqAPI = async () => {
-        const response = await AxiosReq.axiosInstance.get(
-          `${AxiosReq.baseURLIBGE}localidades/estados?orderBy=nome`
+        const response = await AxiosReqIBGE.axiosInstance.get(
+          `${AxiosReqIBGE.baseURLIBGE}localidades/estados`
         );
         setStatesLoaded(response.data);
       };
@@ -56,8 +60,8 @@ export default function FinnishRegister({ navigation, route }) {
   useEffect(() => {
     try {
       const ReqAPI = async () => {
-        const response = await AxiosReq.axiosInstance.get(
-          `${AxiosReq.baseURLIBGE}localidades/estados/${StateSelected}/municipios`
+        const response = await AxiosReqIBGE.axiosInstance.get(
+          `${AxiosReqIBGE.baseURLIBGE}localidades/estados/${StateSelected}/municipios`
         );
         setCityLoaded(response.data);
       };
@@ -69,18 +73,6 @@ export default function FinnishRegister({ navigation, route }) {
       }
     }
   }, [StateSelected]);
-
-  const HandleSubmit = () => {
-    if (!NameSelected | !StateSelected | !CitySelected) {
-      return setSnackShow(true);
-    }
-    myBody["name"] = NameSelected;
-    myBody["state"] = StateSelected;
-    myBody["city"] = CitySelected;
-    console.log(myBody);
-
-    navigation.navigate("Home");
-  };
 
   const [fontsLoaded] = useFonts({
     DMSans_400Regular,
@@ -98,6 +90,41 @@ export default function FinnishRegister({ navigation, route }) {
   if (!fontsLoaded) {
     return null;
   }
+
+  const HandleSubmit = () => {
+    if (!NameSelected | !StateSelected | !CitySelected) {
+      return setSnackShow(true);
+    }
+    myBody["nome"] = NameSelected;
+    myBody["estado"] = StateSelected;
+    myBody["cidade"] = CitySelected;
+
+    const ReqAPI = async () => {
+      const response = await AxiosReqAPI.axiosInstance
+        .post(`${AxiosReqAPI.BaseURL}usuarios`, myBody)
+        .catch((error) => {
+          
+          if (error.response.status === 302) {
+            setSnackShowResponse(true);
+          }
+          if (error.response.status === 400) {
+            SnackShowResponseError(true);
+          }
+          if (error.response.status === 404) {
+            SnackShowResponseError(true);
+          }
+        });
+
+      if (response.status === 200) {
+        
+        setUser(response.data);
+        navigation.navigate("Home");
+      }
+    };
+
+    ReqAPI();
+    
+  };
 
   return (
     <View style={s.ContainerMain}>
@@ -187,6 +214,26 @@ export default function FinnishRegister({ navigation, route }) {
           >
             Preencha todos os dados!
           </Snackbar>
+          <Snackbar
+            style={s.SnackBar}
+            visible={SnackShowResponse}
+            duration={2500}
+            onDismiss={() => {
+              setSnackShowResponse(false);
+            }}
+          >
+            Usuário já cadastrado
+          </Snackbar>
+          <Snackbar
+            style={s.SnackBar}
+            visible={SnackShowResponseError}
+            duration={2500}
+            onDismiss={() => {
+              setSnackShowResponseError(false);
+            }}
+          >
+            Erro ao efetuar login
+          </Snackbar>
         </ScrollView>
       </SafeAreaView>
     </View>
@@ -202,13 +249,14 @@ const s = StyleSheet.create({
     alignSelf: "center",
     marginVertical: 80,
     width: 185,
-    height: 67
+    height: 67,
   },
   NameText: {
     fontFamily: "DMSans_400Regular",
     fontSize: 16,
-    marginLeft: 20,
     marginBottom: 15,
+    alignSelf: "center",
+    marginLeft:-135,
   },
   NameInput: {
     alignSelf: "center",
@@ -223,8 +271,9 @@ const s = StyleSheet.create({
   EstadoText: {
     fontFamily: "DMSans_400Regular",
     fontSize: 16,
-    marginLeft: 20,
     marginBottom: 15,
+    alignSelf: "center",
+    marginLeft:-180,
   },
   BorderPickView: {
     alignSelf: "center",
@@ -260,7 +309,7 @@ const s = StyleSheet.create({
     width: 350,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 20
+    marginTop: 20,
   },
   ContinueText: {
     color: Colors.ColorWhite,
@@ -273,7 +322,6 @@ const s = StyleSheet.create({
     borderRadius: 15,
     height: 50,
     width: 350,
-    marginVertical: 480
-    
+    marginVertical: 480,
   },
 });

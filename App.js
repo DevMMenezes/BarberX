@@ -2,6 +2,7 @@ import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AppContextProvider } from "./src/Shared/AppContext";
+import { UserContextProvider } from "./src/Shared/UserContext";
 
 const Stack = createNativeStackNavigator();
 
@@ -17,43 +18,45 @@ export default function App() {
   return (
     <NavigationContainer>
       <AppContextProvider>
-        <Stack.Navigator initialRouteName="Schedule">
-          <Stack.Screen
-            name="FinnishRegister"
-            component={FinnishRegister}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Register"
-            component={Register}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Welcome"
-            component={Welcome}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Schedule"
-            component={Schedule}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Favorites"
-            component={Favorites}
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
+        <UserContextProvider>
+          <Stack.Navigator initialRouteName="Home">
+            <Stack.Screen
+              name="FinnishRegister"
+              component={FinnishRegister}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Register"
+              component={Register}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Welcome"
+              component={Welcome}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Schedule"
+              component={Schedule}
+              options={{ headerShown: false, animation: "none"  }}
+            />
+            <Stack.Screen
+              name="Home"
+              component={Home}
+              options={{ headerShown: false, animation: "none" }}
+            />
+            <Stack.Screen
+              name="Favorites"
+              component={Favorites}
+              options={{ headerShown: false, animation: "none" }}
+            />
+          </Stack.Navigator>
+        </UserContextProvider>
       </AppContextProvider>
     </NavigationContainer>
   );

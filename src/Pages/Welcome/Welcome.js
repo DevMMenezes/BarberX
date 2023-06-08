@@ -2,8 +2,27 @@ import * as Progress from "react-native-progress";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { Colors } from "../../Shared/Colors";
+import { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Welcome({ navigation }) {
+  useEffect(() => {
+    const ReqStore = async () => {
+      try {
+        const UserStore = await AsyncStorage.getItem("UserData");
+
+        if (UserStore) {
+          //return navigation.replace("Home");
+        } else {
+          //return navigation.replace("Login");
+        }
+      } catch (e) {
+        await AsyncStorage.removeItem("UserData");
+      }
+    };
+
+    ReqStore();
+  }, []);
   return (
     <View style={s.ContainerMain}>
       <StatusBar style="light" />
@@ -28,12 +47,13 @@ const s = StyleSheet.create({
   ContainerMain: {
     flex: 1,
     backgroundColor: Colors.ColorDeepBlue,
+    justifyContent:"center"
   },
   Logo: {
     alignSelf: "center",
-    marginVertical: "65%",
+    marginBottom: 300,
     width: 303,
-    height: 109
+    height: 109,
   },
   Progress: {
     alignSelf: "center",

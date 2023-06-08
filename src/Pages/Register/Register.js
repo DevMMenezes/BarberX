@@ -61,14 +61,12 @@ export default function Register({ navigation }) {
 
     let myBody = {
       email: email,
-      phone: phone,
-      password: password,
-      type: typeButton,
+      telefone: phone,
+      senha: password,
+      tipo: typeButton,
     };
 
     navigation.navigate("FinnishRegister", { myBody: myBody });
-
-    console.log(myBody);
   };
 
   const [fontsLoaded] = useFonts({
@@ -191,7 +189,7 @@ const s = StyleSheet.create({
     alignSelf: "center",
     marginVertical: 80,
     width: 185,
-    height: 67
+    height: 67,
   },
   SelecionarText: {
     fontFamily: "DMSans_500Medium",
@@ -205,7 +203,7 @@ const s = StyleSheet.create({
     backgroundColor: Colors.ColorDeepBlue,
     borderRadius: 25,
     height: 50,
-    width: "45%",
+    width: 150,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -213,41 +211,47 @@ const s = StyleSheet.create({
     backgroundColor: Colors.ColorGray,
     borderRadius: 25,
     height: 50,
-    width: "45%",
+    width: 150,
     alignItems: "center",
     justifyContent: "center",
+    marginLeft: 5,
+    marginRight: 5,
   },
   ContainerSelect: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-around",
-    marginLeft: 20,
-    marginRight: 20,
+    justifyContent: "center",
     marginBottom: 30,
+    marginLeft: 5,
+    marginRight: 5,
   },
   EmailText: {
     fontFamily: "DMSans_400Regular",
     fontSize: 16,
-    marginLeft: 20,
     marginBottom: 15,
+    alignSelf: "center",
+    marginLeft:-220,
   },
   TelefoneText: {
     fontFamily: "DMSans_400Regular",
     fontSize: 16,
-    marginLeft: 20,
     marginBottom: 15,
+    alignSelf: "center",
+    marginLeft:-200,
   },
   SenhaText: {
     fontFamily: "DMSans_400Regular",
     fontSize: 16,
-    marginLeft: 20,
     marginBottom: 15,
+    alignSelf: "center",
+    marginLeft:-220,
   },
   ConfirmaSenhaText: {
     fontFamily: "DMSans_400Regular",
     fontSize: 16,
-    marginLeft: 20,
     marginBottom: 15,
+    alignSelf: "center",
+    marginLeft:-200,
   },
   EmailInput: {
     alignSelf: "center",
@@ -277,7 +281,7 @@ const s = StyleSheet.create({
     height: 45,
     width: 350,
     paddingLeft: 20,
-    marginBottom: 20,
+    marginBottom: 30,
   },
   ButtonContainer: {
     alignSelf: "center",
