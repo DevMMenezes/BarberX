@@ -1,8 +1,6 @@
 import { useCallback, useState, useEffect, useContext } from "react";
 import { Picker } from "@react-native-picker/picker";
 import { StatusBar } from "expo-status-bar";
-import { Snackbar } from "react-native-paper";
-
 import {
   StyleSheet,
   Text,
@@ -27,6 +25,7 @@ import {
 import { Colors } from "../../Shared/Colors";
 import { AxiosReqIBGE, AxiosReqAPI } from "../../Shared/Axios";
 import UserContext from "../../Shared/UserContext";
+import Toast from "react-native-root-toast";
 
 export default function FinnishRegister({ navigation, route }) {
   const [StateSelected, setStateSelected] = useState(12); // Acre code
@@ -34,10 +33,7 @@ export default function FinnishRegister({ navigation, route }) {
   const [CityLoaded, setCityLoaded] = useState("");
   const [CitySelected, setSelectMuni] = useState(2700201); // Acrelandia code
   const [NameSelected, setNameSelected] = useState("");
-  const [SnackShow, setSnackShow] = useState(false);
-  const [SnackShowResponse, setSnackShowResponse] = useState(false);
-  const [SnackShowResponseError, setSnackShowResponseError] = useState(false);
-  
+  const { User, setUser } = useContext(UserContext);
 
   const { myBody } = route.params;
   useEffect(() => {
@@ -84,7 +80,7 @@ export default function FinnishRegister({ navigation, route }) {
   });
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
-      await SplashScreen.hideAsync();
+      // await SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
   if (!fontsLoaded) {
@@ -93,7 +89,16 @@ export default function FinnishRegister({ navigation, route }) {
 
   const HandleSubmit = () => {
     if (!NameSelected | !StateSelected | !CitySelected) {
-      return setSnackShow(true);
+      return Toast.show("Preencha todos os dados", {
+        duration: Toast.durations.LONG,
+        position: 150,
+        shadow: true,
+        animation: true,
+        hideOnPress: true,
+        delay: 0,
+        backgroundColor: Colors.ColorRed,
+        textColor: Colors.ColorWhite,
+      });
     }
     myBody["nome"] = NameSelected;
     myBody["estado"] = StateSelected;
@@ -103,27 +108,51 @@ export default function FinnishRegister({ navigation, route }) {
       const response = await AxiosReqAPI.axiosInstance
         .post(`${AxiosReqAPI.BaseURL}usuarios`, myBody)
         .catch((error) => {
-          
           if (error.response.status === 302) {
-            setSnackShowResponse(true);
+            return Toast.show("E-mail já cadastrado", {
+              duration: Toast.durations.LONG,
+              position: 150,
+              shadow: true,
+              animation: true,
+              hideOnPress: true,
+              delay: 0,
+              backgroundColor: Colors.ColorRed,
+              textColor: Colors.ColorWhite,
+            });
           }
           if (error.response.status === 400) {
-            SnackShowResponseError(true);
+            return Toast.show("Erro ao efetuar login", {
+              duration: Toast.durations.LONG,
+              position: 150,
+              shadow: true,
+              animation: true,
+              hideOnPress: true,
+              delay: 0,
+              backgroundColor: Colors.ColorRed,
+              textColor: Colors.ColorWhite,
+            });
           }
           if (error.response.status === 404) {
-            SnackShowResponseError(true);
+            return Toast.show("Erro ao efetuar login", {
+              duration: Toast.durations.LONG,
+              position: 150,
+              shadow: true,
+              animation: true,
+              hideOnPress: true,
+              delay: 0,
+              backgroundColor: Colors.ColorRed,
+              textColor: Colors.ColorWhite,
+            });
           }
         });
-
+      //  console.log(response);
       if (response.status === 200) {
-        
         setUser(response.data);
         navigation.navigate("Home");
       }
     };
 
     ReqAPI();
-    
   };
 
   return (
@@ -135,10 +164,10 @@ export default function FinnishRegister({ navigation, route }) {
             style={s.Logo}
             source={require("../../../assets/Images/Login/Logo.png")}
           />
-          {myBody.type === "Cliente" ? (
+          {myBody.tipo === "Cliente" ? (
             <Text style={s.NameText}>Digite seu nome</Text>
           ) : (
-            <Text style={s.NameText}>Digite o nome da barbearia</Text>
+            <Text style={s.NameBarberText}>Digite o nome da barbearia</Text>
           )}
           <TextInput
             style={s.NameInput}
@@ -170,7 +199,7 @@ export default function FinnishRegister({ navigation, route }) {
                   );
                 })
               ) : (
-                <ActivityIndicator />
+                <ActivityIndicator size="large" color={Colors.ColorGold} />
               )}
             </Picker>
           </View>
@@ -196,7 +225,7 @@ export default function FinnishRegister({ navigation, route }) {
                   );
                 })
               ) : (
-                <ActivityIndicator />
+                <ActivityIndicator size="large" color={Colors.ColorGold} />
               )}
             </Picker>
           </View>
@@ -204,36 +233,6 @@ export default function FinnishRegister({ navigation, route }) {
           <TouchableOpacity onPress={HandleSubmit} style={s.ButtonContainer}>
             <Text style={s.ContinueText}>Continue</Text>
           </TouchableOpacity>
-          <Snackbar
-            style={s.SnackBar}
-            visible={SnackShow}
-            duration={2500}
-            onDismiss={() => {
-              setSnackShow(false);
-            }}
-          >
-            Preencha todos os dados!
-          </Snackbar>
-          <Snackbar
-            style={s.SnackBar}
-            visible={SnackShowResponse}
-            duration={2500}
-            onDismiss={() => {
-              setSnackShowResponse(false);
-            }}
-          >
-            Usuário já cadastrado
-          </Snackbar>
-          <Snackbar
-            style={s.SnackBar}
-            visible={SnackShowResponseError}
-            duration={2500}
-            onDismiss={() => {
-              setSnackShowResponseError(false);
-            }}
-          >
-            Erro ao efetuar login
-          </Snackbar>
         </ScrollView>
       </SafeAreaView>
     </View>
@@ -256,7 +255,14 @@ const s = StyleSheet.create({
     fontSize: 16,
     marginBottom: 15,
     alignSelf: "center",
-    marginLeft:-135,
+    marginLeft: -215,
+  },
+  NameBarberText: {
+    fontFamily: "DMSans_400Regular",
+    fontSize: 16,
+    marginBottom: 15,
+    alignSelf: "center",
+    marginLeft: -140,
   },
   NameInput: {
     alignSelf: "center",
@@ -273,7 +279,7 @@ const s = StyleSheet.create({
     fontSize: 16,
     marginBottom: 15,
     alignSelf: "center",
-    marginLeft:-180,
+    marginLeft: -180,
   },
   BorderPickView: {
     alignSelf: "center",

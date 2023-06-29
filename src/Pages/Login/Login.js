@@ -19,16 +19,13 @@ import {
   DMSans_700Bold,
   DMSans_700Bold_Italic,
 } from "@expo-google-fonts/dm-sans";
-import { Snackbar } from "react-native-paper";
 
 import { Colors } from "../../Shared/Colors";
 import { AxiosReqIBGE, AxiosReqAPI } from "../../Shared/Axios";
 import UserContext from "../../Shared/UserContext";
+import Toast from "react-native-root-toast";
 
 export default function Login({ navigation }) {
-  const [SnackShowResponse, setSnackShowResponse] = useState(false);
-  const [SnackShowResponseError, setSnackShowResponseError] = useState(false);
-  const [SnackShow, setSnackShow] = useState(false);
   const [Email, setEmail] = useState("");
   const [Senha, setSenha] = useState("");
   const { User, setUser } = useContext(UserContext);
@@ -43,7 +40,7 @@ export default function Login({ navigation }) {
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
-      await SplashScreen.hideAsync();
+      // await SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
 
@@ -53,47 +50,80 @@ export default function Login({ navigation }) {
 
   const HandleLogin = async () => {
     if (!Email | !Senha) {
-      return setSnackShow(true);
+      return Toast.show("Email ou senha não informados", {
+        duration: Toast.durations.LONG,
+        position: 150,
+        shadow: true,
+        animation: true,
+        hideOnPress: true,
+        delay: 0,
+        backgroundColor: Colors.ColorRed,
+        textColor: Colors.ColorWhite,
+      });
     }
 
-    const response = await AxiosReqAPI.axiosInstance
+    await AxiosReqAPI.axiosInstance
       .post(`${AxiosReqAPI.BaseURL}usuarios/login`, {
         email: Email,
         senha: Senha,
       })
-      .catch((error) => {
-        if (error.response.status === 403) {
-          setSnackShowResponse(true);
+      .then(async (response) => {
+        if (response.status === 200) {
+          if (response.data.IDUsuario) {
+            const UserData = await AxiosReqAPI.axiosInstance
+              .get(
+                `${AxiosReqAPI.BaseURL}usuarios/id/${response.data.IDUsuario}`
+              )
+              .catch((error) => {
+                console.log(error.response.status);
+              });
+
+            await setUser(UserData.data);
+            console.log(User);
+
+            const ReqStore = async () => {
+              try {
+                const jsonValue = JSON.stringify(UserData.data);
+                await AsyncStorage.setItem("UserData", jsonValue);
+              } catch (e) {
+                await AsyncStorage.removeItem("UserData");
+              }
+            };
+
+            ReqStore();
+
+            navigation.replace("Welcome");
+          }
         }
-        if (error.response.status === 400) {
-          SnackShowResponseError(true);
+      })
+      .catch((error) => {
+        if (error.response) {
+          if (error.response.status === 403) {
+            return Toast.show("Email ou senha incorretos", {
+              duration: Toast.durations.LONG,
+              position: 150,
+              shadow: true,
+              animation: true,
+              hideOnPress: true,
+              delay: 0,
+              backgroundColor: Colors.ColorRed,
+              textColor: Colors.ColorWhite,
+            });
+          }
+          if (error.response.status === 400) {
+            return Toast.show("Erro ao efetuar Login", {
+              duration: Toast.durations.LONG,
+              position: 150,
+              shadow: true,
+              animation: true,
+              hideOnPress: true,
+              delay: 0,
+              backgroundColor: Colors.ColorRed,
+              textColor: Colors.ColorWhite,
+            });
+          }
         }
       });
-
-    if (response.status === 200) {
-      if (response.data.IDUsuario) {
-        const UserData = await AxiosReqAPI.axiosInstance
-          .get(`${AxiosReqAPI.BaseURL}usuarios/id/${response.data.IDUsuario}`)
-          .catch((error) => {
-            console.log(error.response.status);
-          });
-
-        await setUser(UserData.data);
-
-        const ReqStore = async () => {
-          try {
-            const jsonValue = JSON.stringify(UserData.data);
-            await AsyncStorage.setItem("UserData", jsonValue);
-          } catch (e) {
-            await AsyncStorage.removeItem("UserData");
-          }
-        };
-
-        ReqStore();
-
-        navigation.replace("Home");
-      }
-    }
   };
 
   return (
@@ -136,36 +166,6 @@ export default function Login({ navigation }) {
         >
           <Text style={s.CriarContaText}>Criar minha conta!</Text>
         </TouchableOpacity>
-        <Snackbar
-          style={s.SnackBar}
-          visible={SnackShowResponse}
-          duration={2500}
-          onDismiss={() => {
-            setSnackShowResponse(false);
-          }}
-        >
-          Senha ou e-mail incorretos
-        </Snackbar>
-        <Snackbar
-          style={s.SnackBar}
-          visible={SnackShowResponseError}
-          duration={2500}
-          onDismiss={() => {
-            setSnackShowResponseError(false);
-          }}
-        >
-          Erro ao efetuar login
-        </Snackbar>
-        <Snackbar
-          style={s.SnackBar}
-          visible={SnackShow}
-          duration={2500}
-          onDismiss={() => {
-            setSnackShow(false);
-          }}
-        >
-          Preencha todos os dados!
-        </Snackbar>
       </SafeAreaView>
     </View>
   );
@@ -186,22 +186,22 @@ const s = StyleSheet.create({
     fontFamily: "DMSans_500Medium",
     fontSize: 36,
     alignSelf: "center",
-    marginLeft:-250,
-    marginBottom: 25
+    marginLeft: -250,
+    marginBottom: 25,
   },
   EmailText: {
     fontFamily: "DMSans_400Regular",
     fontSize: 16,
     alignSelf: "center",
-    marginLeft:-220,
-    marginBottom: 10
+    marginLeft: -220,
+    marginBottom: 10,
   },
   SenhaText: {
     fontFamily: "DMSans_400Regular",
     fontSize: 16,
     alignSelf: "center",
-    marginLeft:-220,
-    marginBottom: 10
+    marginLeft: -220,
+    marginBottom: 10,
   },
   EmailInput: {
     alignSelf: "center",
@@ -229,7 +229,7 @@ const s = StyleSheet.create({
     alignSelf: "center",
     marginRight: -210,
     marginBottom: 15,
-    marginTop: 10
+    marginTop: 10,
   },
   ButtonContainer: {
     alignSelf: "center",

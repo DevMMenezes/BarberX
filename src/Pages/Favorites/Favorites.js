@@ -32,7 +32,7 @@ export default function Favorites({ navigation }) {
   });
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
-      await SplashScreen.hideAsync();
+
     }
   }, [fontsLoaded]);
   if (!fontsLoaded) {

@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { Snackbar } from "react-native-paper";
 import {
   StyleSheet,
   Text,
@@ -20,7 +19,7 @@ import {
   DMSans_700Bold,
   DMSans_700Bold_Italic,
 } from "@expo-google-fonts/dm-sans";
-
+import Toast from "react-native-root-toast";
 import { Colors } from "../../Shared/Colors";
 
 export default function Register({ navigation }) {
@@ -30,8 +29,7 @@ export default function Register({ navigation }) {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [spassword, setSpassword] = useState("");
-  const [SnackShow, setSnackShow] = useState(false);
-  const [SnackShowPass, setSnackShowPass] = useState(false);
+
 
   const SelectTypeRegisterClient = () => {
     setTypeRegister(!typeRegister);
@@ -41,7 +39,6 @@ export default function Register({ navigation }) {
       setTypeButton("Cliente");
     }
   };
-
   const SelectTypeRegisterBarbeiro = () => {
     setTypeRegister(!typeRegister);
     if (typeButton === "Cliente") {
@@ -50,13 +47,30 @@ export default function Register({ navigation }) {
       setTypeButton("Cliente");
     }
   };
-
   const HandleSubmit = () => {
     if (!email | !phone | !password | !spassword) {
-      return setSnackShow(true);
+      return Toast.show("Preencha todos os dados", {
+        duration: Toast.durations.LONG,
+        position: 150,
+        shadow: true,
+        animation: true,
+        hideOnPress: true,
+        delay: 0,
+        backgroundColor: Colors.ColorRed,
+        textColor: Colors.ColorWhite,
+      });
     }
     if (password != spassword) {
-      return setSnackShowPass(true);
+      return Toast.show("Senhas estão diferentes", {
+        duration: Toast.durations.LONG,
+        position: 150,
+        shadow: true,
+        animation: true,
+        hideOnPress: true,
+        delay: 0,
+        backgroundColor: Colors.ColorRed,
+        textColor: Colors.ColorWhite,
+      });
     }
 
     let myBody = {
@@ -66,9 +80,10 @@ export default function Register({ navigation }) {
       tipo: typeButton,
     };
 
+    console.log(myBody);
+
     navigation.navigate("FinnishRegister", { myBody: myBody });
   };
-
   const [fontsLoaded] = useFonts({
     DMSans_400Regular,
     DMSans_400Regular_Italic,
@@ -77,17 +92,14 @@ export default function Register({ navigation }) {
     DMSans_700Bold,
     DMSans_700Bold_Italic,
   });
-
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
-      await SplashScreen.hideAsync();
+      // await SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
-
   if (!fontsLoaded) {
     return null;
   }
-
   return (
     <View style={s.ContainerMain}>
       <SafeAreaView>
@@ -154,32 +166,11 @@ export default function Register({ navigation }) {
           <TouchableOpacity onPress={HandleSubmit} style={s.ButtonContainer}>
             <Text style={s.ContinueText}>Continue</Text>
           </TouchableOpacity>
-          <Snackbar
-            style={s.SnackBar}
-            visible={SnackShow}
-            duration={2500}
-            onDismiss={() => {
-              setSnackShow(false);
-            }}
-          >
-            Preencha todos os dados!
-          </Snackbar>
-          <Snackbar
-            style={s.SnackBar}
-            visible={SnackShowPass}
-            duration={2500}
-            onDismiss={() => {
-              setSnackShowPass(false);
-            }}
-          >
-            As senhas estão incorretas!
-          </Snackbar>
         </ScrollView>
       </SafeAreaView>
     </View>
   );
 }
-
 const s = StyleSheet.create({
   ContainerMain: {
     flex: 1,
@@ -230,28 +221,28 @@ const s = StyleSheet.create({
     fontSize: 16,
     marginBottom: 15,
     alignSelf: "center",
-    marginLeft:-220,
+    marginLeft: -220,
   },
   TelefoneText: {
     fontFamily: "DMSans_400Regular",
     fontSize: 16,
     marginBottom: 15,
     alignSelf: "center",
-    marginLeft:-200,
+    marginLeft: -200,
   },
   SenhaText: {
     fontFamily: "DMSans_400Regular",
     fontSize: 16,
     marginBottom: 15,
     alignSelf: "center",
-    marginLeft:-220,
+    marginLeft: -220,
   },
   ConfirmaSenhaText: {
     fontFamily: "DMSans_400Regular",
     fontSize: 16,
     marginBottom: 15,
     alignSelf: "center",
-    marginLeft:-200,
+    marginLeft: -200,
   },
   EmailInput: {
     alignSelf: "center",
