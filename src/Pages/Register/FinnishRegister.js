@@ -281,26 +281,17 @@ const s = StyleSheet.create({
     alignSelf: "center",
     marginLeft: -180,
   },
-  BorderPickView: {
-    alignSelf: "center",
-    borderWidth: 1,
-    borderRadius: 25,
-    borderColor: Colors.ColorGray,
-    height: 45,
-    width: 350,
-    paddingLeft: 20,
-    marginBottom: 15,
-  },
+
   PickInput: {
     alignSelf: "center",
     borderWidth: 1,
     borderRadius: 25,
     borderColor: Colors.ColorGray,
-    height: 45,
+    height: 50,
     width: 350,
     paddingLeft: 20,
-    marginBottom: 15,
-    marginVertical: -5,
+    paddingRight: 20,
+    marginBottom: 5
   },
   PickItemInput: {
     color: Colors.ColorDeepBlue,

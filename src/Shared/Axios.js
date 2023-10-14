@@ -5,8 +5,8 @@ const Ambiente = {
     url: "https://api-navapp.space/",
   },
   homologacao: {
-    // url: "http://192.168.0.101:3005/",
-    url: "http://192.168.0.8:3005/",
+     url: "http://192.168.0.14:3005/",
+    //url: "http://localhost:3005/",
   },
 };
 

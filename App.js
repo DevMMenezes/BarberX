@@ -15,6 +15,7 @@ import FinnishRegister from "./src/Pages/Register/FinnishRegister";
 import Home from "./src/Pages/Home/Home";
 import Favorites from "./src/Pages/Favorites/Favorites";
 import DetailsHome from "./src/Pages/DetailsHome/DetailsHome";
+import Profile from "./src/Pages/Profile/Profile";
 
 export default function App() {
   return (
@@ -23,6 +24,11 @@ export default function App() {
         <AppContextProvider>
           <UserContextProvider>
             <Stack.Navigator initialRouteName="Welcome">
+              <Stack.Screen
+                name="Profile"
+                component={Profile}
+                options={{ headerShown: false }}
+              />
               <Stack.Screen
                 name="DetailsHome"
                 component={DetailsHome}

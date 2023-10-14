@@ -54,6 +54,7 @@ export default function Home({ navigation }) {
     ReqAPICityCurrent();
     ReqAPIBarbers();
     console.log("verificando loopíng");
+    console.log(User);
   }, []);
 
   const ReqAPICityCurrent = async () => {
@@ -76,7 +77,6 @@ export default function Home({ navigation }) {
         console.log("error: " + error.response.status);
         console.log("error: ReqAPIBarbers");
       });
-
     const DataItem = UserData.data.Data;
     if (DataItem) {
       await setBarbers(DataItem);
@@ -328,7 +328,9 @@ export default function Home({ navigation }) {
           </TouchableOpacity>
         </View>
       </Modal>
-      <Text style={s.Title}>Barbearias</Text>
+      <Text style={s.Title}>
+        Barbearias {User.tipo === 'Barbeiro' ?  User.usuario_barberias <= 0 ? "Sem Barber Vinc" : "Vinc" : null}
+      </Text>
       <FlatList
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -502,8 +504,8 @@ const s = StyleSheet.create({
     height: 45,
     width: 275,
     paddingLeft: 20,
-    marginBottom: 15,
-    marginVertical: -5,
+    marginRight: 19
+
   },
   PickItemInput: {
     color: Colors.ColorDeepBlue,

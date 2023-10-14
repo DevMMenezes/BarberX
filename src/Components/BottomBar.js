@@ -26,8 +26,8 @@ export default function BottomBar({ props }) {
     props.navigate("Schedule");
   };
   const HandleProfile = () => {
-    setCurrentScreen("Register");
-    props.navigate("Register");
+    setCurrentScreen("Profile");
+    props.navigate("Profile");
   };
 
   return (
