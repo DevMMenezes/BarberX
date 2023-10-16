@@ -1,3 +1,6 @@
-ProgressBar: https://github.com/oblador/react-native-progress
+Projeto Frontend Barber X
 
-npm i @expo-google-fonts/dm-sans
+Tecs
+
+React Native
+  
