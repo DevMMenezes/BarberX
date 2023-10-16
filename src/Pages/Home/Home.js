@@ -328,9 +328,9 @@ export default function Home({ navigation }) {
           </TouchableOpacity>
         </View>
       </Modal>
-      <Text style={s.Title}>
+      {/* <Text style={s.Title}>
         Barbearias {User.tipo === 'Barbeiro' ?  User.usuario_barberias <= 0 ? "Sem Barber Vinc" : "Vinc" : null}
-      </Text>
+      </Text> */}
       <FlatList
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

@@ -2,11 +2,9 @@ import * as React from "react";
 import { useContext } from "react";
 import { Colors } from "../../Shared/Colors";
 import BottomBar from "../../Components/BottomBar";
-import AppContext from "../../Shared/AppContext";
 import UserContext from "../../Shared/UserContext";
-import { AxiosReqIBGE, AxiosReqAPI } from "../../Shared/Axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
-import { Avatar } from "react-native-paper";
 import { Divider } from "react-native-paper";
 import {
   StyleSheet,
@@ -90,8 +88,22 @@ export default function Profile({ navigation }) {
           />
         </TouchableOpacity>
         <Divider />
-        <TouchableOpacity style={s.Cat1End}>
+        <TouchableOpacity style={s.Cat1}>
           <Text style={s.CatText}>Privacidade</Text>
+          <Image
+            style={s.ForwardButton}
+            source={require("../../../assets/Images/DetailsHome/GoBack.png")}
+          />
+        </TouchableOpacity>
+        <Divider />
+        <TouchableOpacity
+          style={s.Cat1End}
+          onPress={async () => {
+            await AsyncStorage.removeItem("UserData");
+            navigation.replace("Login");
+          }}
+        >
+          <Text style={s.CatText}>Sair</Text>
           <Image
             style={s.ForwardButton}
             source={require("../../../assets/Images/DetailsHome/GoBack.png")}

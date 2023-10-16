@@ -9,7 +9,7 @@ export default function BottomBar({ props }) {
   const Pages = {
     Home: "Home",
     Favorites: "Favorites",
-    Schedule: "Schedule",
+    Scheduled: "Scheduled",
     Profile: "Profile",
   };
 
@@ -22,8 +22,8 @@ export default function BottomBar({ props }) {
     props.navigate("Favorites");
   };
   const HandleSchedule = () => {
-    setCurrentScreen("Schedule");
-    props.navigate("Schedule");
+    setCurrentScreen("Scheduled");
+    props.navigate("Scheduled");
   };
   const HandleProfile = () => {
     setCurrentScreen("Profile");
@@ -59,7 +59,7 @@ export default function BottomBar({ props }) {
         )}
       </TouchableOpacity>
       <TouchableOpacity onPress={HandleSchedule}>
-        {CurrentScreen === Pages.Schedule ? (
+        {CurrentScreen === Pages.Scheduled ? (
           <Image
             style={{ width: 65, height: 43 }}
             source={require("../../assets/Images/Home/BtnAgendaSelected.png")}

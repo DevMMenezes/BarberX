@@ -18,10 +18,13 @@ import { Avatar } from "react-native-paper";
 import { AxiosReqIBGE, AxiosReqAPI } from "../../Shared/Axios";
 import Toast from "react-native-root-toast";
 import UserContext from "../../Shared/UserContext";
+const { HandleAgendar, AdicionaZero } = require("./ScheduleFunctions");
+const moment = require("moment");
 
 export default function Schedule({ navigation, route }) {
   const { id, nome_barbearia, Barbearia } = route.params;
   const [SelectedDay, setSelectedDay] = useState("");
+  const [SelectedHour, setSelectedHour] = useState("");
   const [agenda, setAgenda] = useState([]);
   const [agendaBarber, setagendaBarber] = useState([]);
   const [gridHorarios, setgridHorarios] = useState([]);
@@ -150,6 +153,8 @@ export default function Schedule({ navigation, route }) {
           minDate={`${Today}`}
           onDayPress={(day) => {
             setSelectedDay(day.dateString);
+            // console.log("setSelectedDay:"+ day.dateString)-
+            ReqAPIBarbersAgendaBarber(id, User.id, day.dateString);
           }}
           markedDates={{
             [SelectedDay]: {
@@ -233,6 +238,57 @@ export default function Schedule({ navigation, route }) {
                 <TouchableOpacity
                   disabled={value.status === "Ocupado" ? true : false}
                   key={value.horario}
+                  onPress={() => {
+                    setSelectedHour(value.horario);
+
+                    var HourNow = new Date();
+
+                    let DateSelectedNow = new Date(SelectedDay);
+
+                    Number(DateSelectedNow) > Number(HourNow)
+                      ? DateSelectedNow.setDate(DateSelectedNow.getDate() + 1)
+                      : null;
+
+                    var DateWHour =
+                      HourNow.getFullYear() +
+                      "-" +
+                      HourNow.getMonth() +
+                      "-" +
+                      HourNow.getDate() +
+                      " " +
+                      AdicionaZero(HourNow.getHours()) +
+                      ":" +
+                      AdicionaZero(HourNow.getMinutes()) +
+                      ":" +
+                      HourNow.getSeconds();
+
+                    var DateSelect =
+                      DateSelectedNow.getFullYear() +
+                      "-" +
+                      DateSelectedNow.getMonth() +
+                      "-" +
+                      DateSelectedNow.getDate() +
+                      " " +
+                      value.horario;
+                      
+                    DateSelect < DateWHour
+                      ? Toast.show("Data Não Disponível", {
+                          duration: Toast.durations.LONG,
+                          position: 70,
+                          shadow: true,
+                          animation: true,
+                          hideOnPress: true,
+                          delay: 0,
+                        })
+                      : Toast.show(`Agendado às: ${value.horario}`, {
+                          duration: Toast.durations.LONG,
+                          position: 70,
+                          shadow: true,
+                          animation: true,
+                          hideOnPress: true,
+                          delay: 0,
+                        });
+                  }}
                 >
                   <View
                     style={
@@ -265,14 +321,15 @@ export default function Schedule({ navigation, route }) {
       </ScrollView>
       <TouchableOpacity
         onPress={() => {
-          Toast.show("Testando agora a funcao", {
-            duration: Toast.durations.LONG,
-            position: 70,
-            shadow: true,
-            animation: true,
-            hideOnPress: true,
-            delay: 0,
-          });
+          HandleAgendar(
+            navigation,
+            id,
+            new Date(),
+            SelectedHour,
+            User.nome,
+            User.telefone,
+            User.id
+          );
         }}
         style={{
           alignSelf: "center",
